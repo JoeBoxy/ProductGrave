@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TombstoneCard from '../components/tombstone/TombstoneCard.astro';
+import GraveStats from '../components/tombstone/GraveStats.astro';
+import { getCollection } from 'astro:content';
+
+const allGraves = await getCollection('graves', (g) => g.data.status === 'published');
+const graves = allGraves.sort((a, b) => {
+  // Sort by death date descending
+  return new Date(b.data.death).getTime() - new Date(a.data.death).getTime();
+});
+
+const featured = graves[0];
+---
+
+<BaseLayout
+  title="Product Grave — Learn from the Dead"
+  description="A pixel-art graveyard for dead tech products. Explore the stories, causes of death, and lessons from failed startups and killed products."
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b-2 border-grave-stone">
+    <div class="mx-auto max-w-6xl px-4 py-16 md:py-24 text-center">
+      <h1 class="text-2xl md:text-4xl text-grave-bone text-shadow-pixel mb-6">
+        🪦 PRODUCT GRAVE
+      </h1>
+      <p class="text-base md:text-lg text-grave-ash max-w-2xl mx-auto leading-relaxed mb-8">
+        Every dead product has a story. We bury them with honor, analyze their demise,
+        and extract lessons for the living.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#graveyard" class="pixel-btn">Enter Graveyard</a>
+        <a href="/submit" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit a Death</a>
+      </div>
+    </div>
+
+    <!-- Decorative stars / particles -->
+    <div class="absolute top-8 left-8 text-grave-candle/20 text-lg animate-float">✦</div>
+    <div class="absolute top-16 right-12 text-grave-ghost/15 text-sm animate-float" style="animation-delay: 1s;">✦</div>
+    <div class="absolute bottom-12 left-1/4 text-grave-blood/10 text-xs animate-float" style="animation-delay: 2s;">✦</div>
+  </section>
+
+  <!-- Today's Featured -->
+  {featured && (
+    <section class="mx-auto max-w-6xl px-4 py-10">
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🕯 TODAY'S OFFERING</span>
+      </div>
+      <a href={`/grave/${featured.slug}`} class="block pixel-card p-6 md:p-8 hover:border-grave-ghost/40 transition-colors">
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div class="text-4xl">🪦</div>
+          <div class="flex-1">
+            <h2 class="font-pixel text-sm md:text-base text-grave-bone mb-2">{featured.data.name}</h2>
+            <p class="text-grave-ash text-sm leading-relaxed mb-3">{featured.data.summary}</p>
+            <p class="text-xs text-grave-etch font-mono">{featured.data.birth} — {featured.data.death} · {featured.data.industry}</p>
+          </div>
+          <span class="pixel-btn text-[10px] shrink-0">Read Death Report →</span>
+        </div>
+      </a>
+    </section>
+  )}
+
+  <!-- Graveyard Wall -->
+  <section id="graveyard" class="mx-auto max-w-6xl px-4 py-10">
+    <div class="grave-divider mb-10">
+      <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🪦 THE GRAVEYARD</span>
+    </div>
+
+    {graves.length === 0 ? (
+      <div class="text-center py-20">
+        <p class="font-pixel text-sm text-grave-etch mb-4">The graveyard is empty...</p>
+        <p class="text-grave-ash">Be the first to bury a product.</p>
+        <a href="/submit" class="pixel-btn mt-6">Submit a Death</a>
+      </div>
+    ) : (
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+        {graves.map((grave) => (
+          <TombstoneCard
+            slug={grave.slug}
+            name={grave.data.name}
+            birth={grave.data.birth}
+            death={grave.data.death}
+            epitaph={grave.data.epitaph}
+            causeOfDeath={grave.data.cause_of_death}
+            industry={grave.data.industry}
+          />
+        ))}
+      </div>
+    )}
+  </section>
+
+  <!-- Stats -->
+  <GraveStats />
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-6xl px-4 py-16 text-center">
+    <div class="pixel-card p-8 md:p-12 max-w-2xl mx-auto">
+      <h2 class="font-pixel text-base text-grave-bone mb-4">Know a Dead Product?</h2>
+      <p class="text-grave-ash text-sm leading-relaxed mb-6">
+        Help us grow the graveyard. Submit a product death report and contribute to the collective memory of the tech industry.
+      </p>
+      <a href="/submit" class="pixel-btn">Submit a Death Report</a>
+    </div>
+  </section>
+</BaseLayout>

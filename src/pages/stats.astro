@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const graves = await getCollection('graves', (g) => g.data.status === 'published');
+
+const total = graves.length;
+const industries: Record<string, number> = {};
+const causes: Record<string, number> = {};
+const stages: Record<string, number> = {};
+let totalFunding = 0;
+
+graves.forEach((g) => {
+  industries[g.data.industry] = (industries[g.data.industry] || 0) + 1;
+  g.data.cause_of_death.forEach((c) => {
+    causes[c] = (causes[c] || 0) + 1;
+  });
+  stages[g.data.stage_at_death] = (stages[g.data.stage_at_death] || 0) + 1;
+  if (g.data.funding_total) {
+    const num = parseFloat(g.data.funding_total.replace(/[^0-9.]/g, ''));
+    if (!isNaN(num)) totalFunding += num;
+  }
+});
+
+const topCauses = Object.entries(causes).sort((a, b) => b[1] - a[1]);
+const topIndustries = Object.entries(industries).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout
+  title="Graveyard Stats — Product Grave"
+  description="Data and statistics from the digital graveyard. See what kills tech products most often."
+>
+  <div class="mx-auto max-w-4xl px-4 py-16 md:py-24">
+    <div class="text-center mb-12">
+      <h1 class="font-pixel text-xl md:text-2xl text-grave-bone text-shadow-pixel mb-4">📊 GRAVEYARD STATS</h1>
+      <p class="text-grave-ash max-w-xl mx-auto">
+        Numbers don't lie. Here's what the data says about how tech products die.
+      </p>
+    </div>
+
+    <!-- Top Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <div class="pixel-card p-5 text-center">
+        <p class="font-pixel text-2xl text-grave-ghost text-shadow-glow">{total}</p>
+        <p class="text-xs text-grave-ash mt-2">Souls Buried</p>
+      </div>
+      <div class="pixel-card p-5 text-center">
+        <p class="font-pixel text-2xl text-grave-blood text-shadow-pixel">${totalFunding.toFixed(1)}B</p>
+        <p class="text-xs text-grave-ash mt-2">Total Funding Lost</p>
+      </div>
+      <div class="pixel-card p-5 text-center">
+        <p class="font-pixel text-2xl text-grave-candle text-shadow-pixel">{Object.keys(causes).length}</p>
+        <p class="text-xs text-grave-ash mt-2">Unique Causes</p>
+      </div>
+      <div class="pixel-card p-5 text-center">
+        <p class="font-pixel text-2xl text-grave-ghost text-shadow-glow">{Object.keys(industries).length}</p>
+        <p class="text-xs text-grave-ash mt-2">Industries</p>
+      </div>
+    </div>
+
+    <!-- Causes -->
+    <section class="mb-12">
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">⚰️ CAUSES OF DEATH</span>
+      </div>
+      <div class="space-y-3">
+        {topCauses.map(([cause, count]) => (
+          <div class="pixel-card p-4 flex items-center gap-4">
+            <span class={`font-pixel text-xs text-cause-${cause} shrink-0 w-32`}>{cause.replace('-', ' ')}</span>
+            <div class="flex-1 h-3 bg-grave-night border border-grave-stone overflow-hidden">
+              <div class={`h-full bg-cause-${cause}`} style={`width: ${(count / topCauses[0][1]) * 100}%`} />
+            </div>
+            <span class="font-mono text-sm text-grave-bone w-8 text-right">{count}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Industries -->
+    <section class="mb-12">
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🏭 INDUSTRIES</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {topIndustries.map(([ind, count]) => (
+          <div class="pixel-card p-4 text-center">
+            <p class="font-pixel text-lg text-grave-bone mb-1">{count}</p>
+            <p class="text-xs text-grave-ash capitalize">{ind}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Stages -->
+    <section>
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">📈 STAGE AT DEATH</span>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        {Object.entries(stages).map(([stage, count]) => (
+          <div class="pixel-tag border-grave-stone text-grave-ash px-3 py-2">
+            <span class="font-pixel text-grave-bone mr-2">{count}</span>
+            <span class="capitalize">{stage.replace('-', ' ')}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

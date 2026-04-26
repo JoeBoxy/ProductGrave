@@ -1,0 +1,217 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CauseTag from '../../components/ui/CauseTag.astro';
+
+export async function getStaticPaths() {
+  const graves = await getCollection('graves');
+  return graves.map((grave) => ({
+    params: { slug: grave.slug },
+    props: { grave },
+  }));
+}
+
+const { grave } = Astro.props;
+const { Content } = await grave.render();
+
+const {
+  name,
+  birth,
+  death,
+  lifespan_months,
+  headquarters,
+  industry,
+  cause_of_death,
+  stage_at_death,
+  funding_total,
+  founders,
+  epitaph,
+  summary,
+  timeline,
+  lessons,
+  related,
+  sources,
+  og_image,
+} = grave.data;
+
+const relatedGraves = related
+  ? (await getCollection('graves')).filter((g) => related.includes(g.slug) && g.data.status === 'published')
+  : [];
+
+const title = `${name} (${birth}–${death}) — Product Grave`;
+---
+
+<BaseLayout
+  title={title}
+  description={summary}
+  ogImage={og_image || `/images/og/${grave.slug}.png`}
+  canonical={`https://productgrave.com/grave/${grave.slug}`}
+>
+  <article class="mx-auto max-w-4xl px-4 py-10 md:py-16">
+    <!-- Breadcrumb -->
+    <nav class="mb-6">
+      <a href="/" class="text-xs text-grave-ash hover:text-grave-ghost transition-colors">← Back to Graveyard</a>
+    </nav>
+
+    <!-- Header / Tombstone Hero -->
+    <header class="pixel-card p-6 md:p-10 mb-8">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div class="text-5xl md:text-6xl shrink-0">🪦</div>
+        <div class="flex-1">
+          <h1 class="font-pixel text-lg md:text-2xl text-grave-bone text-shadow-pixel mb-3">{name}</h1>
+          <p class="text-sm text-grave-ash italic mb-4">"{epitaph}"</p>
+          <div class="flex flex-wrap gap-2">
+            {cause_of_death.map((cause) => (
+              <CauseTag cause={cause} />
+            ))}
+            <span class="pixel-tag text-grave-etch border-grave-etch/40">{industry}</span>
+            <span class="pixel-tag text-grave-ghost border-grave-ghost/40">{stage_at_death}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Death Certificate Info -->
+    <section class="pixel-card p-6 md:p-8 mb-8">
+      <h2 class="font-pixel text-xs text-grave-ash mb-6 uppercase tracking-widest">📋 Death Certificate</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div>
+          <p class="text-grave-etch text-xs mb-1">Born</p>
+          <p class="text-grave-bone font-mono">{birth}</p>
+        </div>
+        <div>
+          <p class="text-grave-etch text-xs mb-1">Died</p>
+          <p class="text-grave-blood font-mono">{death}</p>
+        </div>
+        {lifespan_months && (
+          <div>
+            <p class="text-grave-etch text-xs mb-1">Survived</p>
+            <p class="text-grave-bone font-mono">{lifespan_months} months</p>
+          </div>
+        )}
+        {headquarters && (
+          <div>
+            <p class="text-grave-etch text-xs mb-1">Headquarters</p>
+            <p class="text-grave-bone">{headquarters}</p>
+          </div>
+        )}
+        {funding_total && (
+          <div>
+            <p class="text-grave-etch text-xs mb-1">Funding</p>
+            <p class="text-grave-bone font-mono">{funding_total}</p>
+          </div>
+        )}
+        {founders && founders.length > 0 && (
+          <div class="col-span-2 md:col-span-2">
+            <p class="text-grave-etch text-xs mb-1">Founders</p>
+            <p class="text-grave-bone">{founders.join(', ')}</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Timeline -->
+    {timeline && timeline.length > 0 && (
+      <section class="mb-8">
+        <div class="grave-divider mb-6">
+          <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">📜 TIMELINE</span>
+        </div>
+        <div class="relative pl-6 md:pl-8 border-l-2 border-grave-stone space-y-6">
+          {timeline.map((item) => (
+            <div class="relative">
+              <span class="absolute -left-[31px] md:-left-[39px] top-1 w-3 h-3 bg-grave-stone border-2 border-grave-ghost rounded-full" />
+              <p class="font-mono text-xs text-grave-ghost mb-1">{item.date}</p>
+              <p class="text-sm text-grave-bone">{item.event}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Autopsy Report (Rendered Markdown) -->
+    <section class="mb-8">
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🔍 AUTOPSY REPORT</span>
+      </div>
+      <div class="prose prose-invert prose-grave max-w-none">
+        <Content />
+      </div>
+    </section>
+
+    <!-- Lessons -->
+    {lessons && lessons.length > 0 && (
+      <section class="pixel-card p-6 md:p-8 mb-8">
+        <div class="grave-divider mb-6">
+          <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">💡 LESSONS</span>
+        </div>
+        <div class="space-y-5">
+          {lessons.map((lesson, idx) => (
+            <div class="flex gap-4">
+              <span class="font-pixel text-grave-ghost text-xs shrink-0 mt-0.5">{String(idx + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 class="font-pixel text-xs text-grave-bone mb-1">{lesson.title}</h3>
+                <p class="text-sm text-grave-ash leading-relaxed">{lesson.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Related Graves -->
+    {relatedGraves.length > 0 && (
+      <section class="mb-8">
+        <div class="grave-divider mb-6">
+          <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">⚰️ RELATED DEATHS</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {relatedGraves.map((g) => (
+            <a href={`/grave/${g.slug}`} class="pixel-card p-4 hover:border-grave-ghost/40 transition-colors">
+              <p class="font-pixel text-xs text-grave-bone mb-1">{g.data.name}</p>
+              <p class="text-xs text-grave-ash line-clamp-2">{g.data.summary}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Sources -->
+    {sources && sources.length > 0 && (
+      <section class="mb-8">
+        <div class="grave-divider mb-6">
+          <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">📚 SOURCES</span>
+        </div>
+        <ul class="space-y-2">
+          {sources.map((source) => (
+            <li>
+              <a href={source.url} target="_blank" rel="noopener" class="text-sm text-grave-ghost hover:text-grave-bone transition-colors underline underline-offset-2">
+                {source.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <!-- Share -->
+    <section class="pixel-card p-6 text-center">
+      <p class="font-pixel text-xs text-grave-ash mb-3">Share this death report</p>
+      <div class="flex justify-center gap-3">
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${name} — ${epitaph}`)}&url=${encodeURIComponent(`https://productgrave.com/grave/${grave.slug}`)}`}
+          target="_blank"
+          rel="noopener"
+          class="pixel-btn text-[10px]"
+        >
+          Share on X
+        </a>
+        <button
+          class="pixel-btn text-[10px]"
+          onclick={`navigator.clipboard.writeText('https://productgrave.com/grave/${grave.slug}')`}
+        >
+          Copy Link
+        </button>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+
+const graves = await getCollection('graves', (g) => g.data.status === 'published');
+const total = graves.length;
+
+const causeCounts: Record<string, number> = {};
+graves.forEach((g) => {
+  g.data.cause_of_death.forEach((c) => {
+    causeCounts[c] = (causeCounts[c] || 0) + 1;
+  });
+});
+
+const topCause = Object.entries(causeCounts).sort((a, b) => b[1] - a[1])[0];
+---
+
+<section class="mx-auto max-w-6xl px-4 py-12">
+  <div class="grave-divider mb-8">
+    <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">📊 GRAVEYARD STATS</span>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="pixel-card p-5 text-center">
+      <p class="font-pixel text-2xl text-grave-ghost text-shadow-glow">{total}</p>
+      <p class="text-xs text-grave-ash mt-2">Souls Buried</p>
+    </div>
+    <div class="pixel-card p-5 text-center">
+      <p class="font-pixel text-2xl text-grave-blood text-shadow-pixel">{topCause ? topCause[1] : 0}</p>
+      <p class="text-xs text-grave-ash mt-2">By {topCause ? topCause[0] : 'None'}</p>
+    </div>
+    <div class="pixel-card p-5 text-center">
+      <p class="font-pixel text-2xl text-grave-candle text-shadow-pixel">{Object.keys(causeCounts).length}</p>
+      <p class="text-xs text-grave-ash mt-2">Causes of Death</p>
+    </div>
+    <div class="pixel-card p-5 text-center">
+      <p class="font-pixel text-2xl text-grave-ghost text-shadow-glow">∞</p>
+      <p class="text-xs text-grave-ash mt-2">Lessons Learned</p>
+    </div>
+  </div>
+</section>

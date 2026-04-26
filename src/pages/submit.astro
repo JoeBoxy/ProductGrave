@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const success = Astro.url.searchParams.get('success') === '1';
+---
+
+<BaseLayout
+  title={success ? "Thank You — Product Grave" : "Submit a Death — Product Grave"}
+  description="Help us grow the graveyard. Submit a product death report and contribute to the collective memory of the tech industry."
+>
+  <div class="mx-auto max-w-2xl px-4 py-16 md:py-24">
+    <div class="text-center mb-10">
+      <h1 class="font-pixel text-xl text-grave-bone text-shadow-pixel mb-4">
+        {success ? '✅ THANK YOU' : '📝 SUBMIT A DEATH'}
+      </h1>
+      <p class="text-grave-ash leading-relaxed">
+        {success 
+          ? "Your submission has been received. We'll review it and notify you if we publish it in the graveyard."
+          : "Know a product that died and has lessons worth sharing? Fill out the form below or open a GitHub Issue."
+        }
+      </p>
+    </div>
+
+    {success ? (
+      <div class="pixel-card p-8 md:p-12 text-center">
+        <div class="text-4xl mb-4">🪦</div>
+        <p class="text-grave-ash mb-6">Another soul has been reported to the graveyard.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href="/" class="pixel-btn">Back to Graveyard</a>
+          <a href="/submit" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit Another</a>
+        </div>
+      </div>
+    ) : (
+    <div class="pixel-card p-6 md:p-8">
+      <form class="space-y-6" action="https://formspree.io/f/mdayjbgq" method="POST">
+        <input type="hidden" name="_subject" value="New Product Grave Submission" />
+        <input type="hidden" name="_next" value="https://productgrave.com/submit?success=1" />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Product Name *</label>
+            <input type="text" name="name" required class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors" placeholder="e.g. Google Glass" />
+          </div>
+          <div>
+            <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Industry *</label>
+            <select name="industry" required class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors">
+              <option value="">Select...</option>
+              <option value="saas">SaaS</option>
+              <option value="hardware">Hardware</option>
+              <option value="social">Social</option>
+              <option value="fintech">Fintech</option>
+              <option value="crypto">Crypto</option>
+              <option value="health">Health</option>
+              <option value="streaming">Streaming</option>
+              <option value="mobile">Mobile</option>
+              <option value="e-commerce">E-commerce</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Birth Date</label>
+            <input type="text" name="birth" class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors" placeholder="YYYY-MM" />
+          </div>
+          <div>
+            <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Death Date *</label>
+            <input type="text" name="death" required class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors" placeholder="YYYY-MM" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Cause(s) of Death *</label>
+          <div class="flex flex-wrap gap-2">
+            {['burnout','no-pmf','too-early','execution','competition','regulation','acquired-killed','pivot-failed','hype-crash'].map(c => (
+              <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                <input type="checkbox" name="causes" value={c} class="accent-grave-ghost" />
+                <span class="text-xs text-grave-ash capitalize">{c.replace('-', ' ')}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Death Story / Analysis *</label>
+          <textarea name="story" rows="6" required class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors resize-y" placeholder="What happened? Why did it die? What can we learn?"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Source Links</label>
+          <textarea name="sources" rows="2" class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors resize-y" placeholder="https://...&#10;https://..."></textarea>
+        </div>
+
+        <div>
+          <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Your Email</label>
+          <input type="email" name="email" class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors" placeholder="you@example.com" />
+          <p class="text-[10px] text-grave-etch mt-1">Optional. We may reach out if we need clarification.</p>
+        </div>
+
+        <button type="submit" class="pixel-btn w-full">Submit Death Report</button>
+        <p class="text-[10px] text-grave-etch text-center">Powered by Formspree. We receive your submission via email.</p>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-grave-stone/50 text-center">
+        <p class="text-xs text-grave-etch">
+          All submissions are reviewed before publication. We prioritize factual accuracy and constructive analysis.
+        </p>
+      </div>
+    </div>
+    )}
+  </div>
+</BaseLayout>

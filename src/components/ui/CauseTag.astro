@@ -1,0 +1,25 @@
+---
+export interface Props {
+  cause: string;
+}
+
+const CAUSE_LABELS: Record<string, string> = {
+  burnout: 'Burnout',
+  'no-pmf': 'No PMF',
+  'too-early': 'Too Early',
+  execution: 'Execution',
+  competition: 'Competition',
+  regulation: 'Regulation',
+  'acquired-killed': 'Acquired & Killed',
+  'pivot-failed': 'Pivot Failed',
+  'hype-crash': 'Hype Crash',
+  unknown: 'Unknown',
+};
+
+const { cause } = Astro.props;
+const label = CAUSE_LABELS[cause] || cause;
+---
+
+<span class={`inline-block px-2 py-1 border font-pixel text-[9px] leading-none tracking-wider uppercase bg-grave-night/60 backdrop-blur-sm text-cause-${cause} border-cause-${cause}/50`}>
+  {label}
+</span>

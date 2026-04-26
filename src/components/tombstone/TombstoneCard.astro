@@ -1,0 +1,92 @@
+---
+import CauseTag from '../ui/CauseTag.astro';
+
+export interface Props {
+  slug: string;
+  name: string;
+  birth: string;
+  death: string;
+  epitaph: string;
+  causeOfDeath: string[];
+  industry: string;
+}
+
+const { slug, name, birth, death, epitaph, causeOfDeath, industry } = Astro.props;
+
+// Generate a deterministic "pixel tombstone" visual
+const hash = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+const decorations = ['✝', '⚙', '🔥', '⭐', '💔', '💀'];
+const deco = decorations[hash % decorations.length];
+const decoColor = ['#E07A5F', '#57CC99', '#F2CC8F', '#9B5DE5', '#E63946', '#ADB5BD'][hash % 6];
+---
+
+<a
+  href={`/grave/${slug}`}
+  class="group relative flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2"
+>
+  <!-- Tombstone shape with 3D feel -->
+  <div class="relative w-[170px] h-[240px] md:w-[190px] md:h-[260px]">
+    
+    <!-- Stone body - arched top tombstone -->
+    <div
+      class="absolute inset-0 rounded-t-[50%] border-2 border-grave-etch/30 bg-gradient-to-b from-grave-stone via-grave-earth to-[#2a2220] shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-300 group-hover:shadow-[0_12px_40px_rgba(87,204,153,0.15)] group-hover:border-grave-ghost/20"
+    >
+      <!-- Inner bevel line -->
+      <div class="absolute inset-[6px] rounded-t-[48%] border border-grave-etch/10 pointer-events-none" />
+      
+      <!-- Decorative element -->
+      <div class="absolute top-5 left-1/2 -translate-x-1/2 text-lg opacity-60" style={`color: ${decoColor};`}>
+        {deco}
+      </div>
+
+      <!-- Product name on stone -->
+      <div class="absolute top-12 left-0 right-0 px-3">
+        <p class="font-pixel text-[9px] leading-tight text-grave-bone/90 line-clamp-2 text-shadow-pixel">
+          {name}
+        </p>
+      </div>
+
+      <!-- Divider line -->
+      <div class="absolute top-[72px] left-1/2 -translate-x-1/2 w-[60%] h-px bg-grave-etch/20" />
+
+      <!-- Dates in center -->
+      <div class="absolute top-[84px] left-0 right-0">
+        <p class="font-mono text-[9px] text-grave-ash/60 tracking-wider">
+          {birth}
+        </p>
+        <p class="font-mono text-[8px] text-grave-blood/50 mt-1">↓</p>
+        <p class="font-mono text-[9px] text-grave-ash/60 tracking-wider mt-1">
+          {death}
+        </p>
+      </div>
+
+      <!-- RIP at bottom -->
+      <div class="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1">
+        <div class="w-[40%] h-px bg-grave-etch/15" />
+        <span class="font-pixel text-[7px] text-grave-etch/40 tracking-[0.4em] mt-1">R.I.P.</span>
+      </div>
+    </div>
+
+    <!-- Stone base - more realistic -->
+    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-[130px] h-4 bg-gradient-to-b from-grave-stone to-grave-earth border border-grave-etch/20 rounded-sm shadow-md" />
+    <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[90px] h-3 bg-gradient-to-b from-grave-earth to-[#1e1815] border border-grave-etch/15 rounded-sm" />
+    
+    <!-- Ground shadow -->
+    <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[100px] h-2 bg-black/30 rounded-full blur-sm" />
+  </div>
+
+  <!-- Info below tombstone -->
+  <div class="mt-6 space-y-2 max-w-[190px]">
+    <h3 class="font-pixel text-xs text-grave-bone group-hover:text-grave-ghost transition-colors duration-300 line-clamp-1 text-shadow-pixel">
+      {name}
+    </h3>
+    <p class="text-xs text-grave-ash/80 italic leading-relaxed line-clamp-2">
+      "{epitaph}"
+    </p>
+    <div class="flex flex-wrap justify-center gap-1.5">
+      {causeOfDeath.slice(0, 2).map((cause) => (
+        <CauseTag cause={cause} />
+      ))}
+    </div>
+  </div>
+</a>
