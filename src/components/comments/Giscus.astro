@@ -1,19 +1,10 @@
 ---
 // Giscus comment system — powered by GitHub Discussions
-// Setup: https://giscus.app/
-//
-// After enabling Discussions on your repo, visit giscus.app and fill in:
-// - repo: your-username/ProductGrave
-// - category: "General" (or create "Grave Discussions")
-// - mapping: "pathname"
-//
-// Then replace the data-repo and data-category-id below with your values.
+// https://giscus.app/
 
 interface Props {
   term?: string;
 }
-
-const { term } = Astro.props;
 ---
 
 <section class="mt-12">
@@ -29,18 +20,16 @@ const { term } = Astro.props;
     <script
       src="https://giscus.app/client.js"
       data-repo="JoeBoxy/ProductGrave"
-      data-repo-id="TO_BE_FILLED"
+      data-repo-id="R_kgDOSMta_A"
       data-category="General"
-      data-category-id="TO_BE_FILLED"
-      data-mapping={term ? "specific" : "pathname"}
-      data-term={term}
+      data-category-id="DIC_kwDOSMta_M4C7xxr"
+      data-mapping="pathname"
       data-strict="0"
       data-reactions-enabled="1"
       data-emit-metadata="0"
       data-input-position="bottom"
       data-theme="dark"
       data-lang="en"
-      data-loading="lazy"
       crossorigin="anonymous"
       async
     ></script>
