@@ -1,0 +1,91 @@
+---
+interface Props {
+  slug: string;
+  name: string;
+}
+
+const { slug, name } = Astro.props;
+---
+
+<section class="mt-8">
+  <div class="grave-divider mb-6">
+    <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">⚖️ THE VERDICT</span>
+  </div>
+  <div class="pixel-card p-6 md:p-8 text-center" data-verdict={slug}>
+    <p class="text-sm text-grave-ash mb-6">
+      Did <strong class="text-grave-bone">{name}</strong> deserve to die?
+      Cast your verdict.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        class="verdict-btn pixel-btn border-grave-blood/60 text-grave-blood hover:bg-grave-blood hover:text-grave-night"
+        data-value="guilty"
+        aria-label="Guilty — deserved to die"
+      >
+        ☠️ GUILTY
+      </button>
+      <button
+        class="verdict-btn pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night"
+        data-value="innocent"
+        aria-label="Innocent — died too soon"
+      >
+        😇 INNOCENT
+      </button>
+    </div>
+    <p class="verdict-result text-xs text-grave-etch mt-4 hidden"></p>
+  </div>
+</section>
+
+<script>
+  (function() {
+    const containers = document.querySelectorAll('[data-verdict]');
+    containers.forEach(container => {
+      const slug = container.getAttribute('data-verdict');
+      const buttons = container.querySelectorAll('.verdict-btn');
+      const result = container.querySelector('.verdict-result');
+      const storageKey = `pg-verdict-${slug}`;
+      const saved = localStorage.getItem(storageKey);
+
+      if (saved) {
+        buttons.forEach(btn => {
+          btn.disabled = true;
+          if (btn.getAttribute('data-value') === saved) {
+            btn.classList.add('opacity-100');
+            btn.classList.remove('opacity-60');
+          } else {
+            btn.classList.add('opacity-40');
+          }
+        });
+        if (result) {
+          result.textContent = saved === 'guilty'
+            ? 'You sentenced them to death. Harsh but fair.'
+            : 'You believe they died too soon. Rest in peace.';
+          result.classList.remove('hidden');
+        }
+        return;
+      }
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const value = btn.getAttribute('data-value');
+          localStorage.setItem(storageKey, value);
+          buttons.forEach(b => {
+            b.disabled = true;
+            if (b === btn) {
+              b.classList.add('opacity-100');
+              b.classList.remove('opacity-60');
+            } else {
+              b.classList.add('opacity-40');
+            }
+          });
+          if (result) {
+            result.textContent = value === 'guilty'
+              ? 'You sentenced them to death. Harsh but fair.'
+              : 'You believe they died too soon. Rest in peace.';
+            result.classList.remove('hidden');
+          }
+        });
+      });
+    });
+  })();
+</script>

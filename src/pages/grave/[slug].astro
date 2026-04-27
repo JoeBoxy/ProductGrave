@@ -2,6 +2,8 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CauseTag from '../../components/ui/CauseTag.astro';
+import VerdictVote from '../../components/vote/VerdictVote.astro';
+import Giscus from '../../components/comments/Giscus.astro';
 
 export async function getStaticPaths() {
   const graves = await getCollection('graves');
@@ -193,6 +195,9 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
       </section>
     )}
 
+    <!-- Verdict -->
+    <VerdictVote slug={grave.slug} name={name} />
+
     <!-- Share -->
     <section class="pixel-card p-6 text-center">
       <p class="font-pixel text-xs text-grave-ash mb-3">Share this death report</p>
@@ -213,5 +218,8 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
         </button>
       </div>
     </section>
+
+    <!-- Discussion -->
+    <Giscus term={`${name} — Product Grave`} />
   </article>
 </BaseLayout>

@@ -11,6 +11,7 @@ const graves = allGraves.sort((a, b) => {
 });
 
 const featured = graves[0];
+const subscribed = Astro.url.searchParams.get('subscribed') === '1';
 ---
 
 <BaseLayout
@@ -23,9 +24,12 @@ const featured = graves[0];
       <h1 class="text-2xl md:text-4xl text-grave-bone text-shadow-pixel mb-6">
         🪦 PRODUCT GRAVE
       </h1>
-      <p class="text-base md:text-lg text-grave-ash max-w-2xl mx-auto leading-relaxed mb-8">
+      <p class="text-base md:text-lg text-grave-ash max-w-2xl mx-auto leading-relaxed mb-2">
         Every dead product has a story. We bury them with honor, analyze their demise,
         and extract lessons for the living.
+      </p>
+      <p class="text-sm text-grave-ghost mb-8">
+        20 cases · Verdicts open · Join the inquest
       </p>
       <div class="flex flex-wrap justify-center gap-4">
         <a href="#graveyard" class="pixel-btn">Enter Graveyard</a>
@@ -39,11 +43,21 @@ const featured = graves[0];
     <div class="absolute bottom-12 left-1/4 text-grave-blood/10 text-xs animate-float" style="animation-delay: 2s;">✦</div>
   </section>
 
+  {subscribed && (
+    <section class="mx-auto max-w-6xl px-4 pt-6">
+      <div class="pixel-card p-4 text-center border-grave-ghost/40">
+        <p class="text-sm text-grave-ghost">
+          ✅ You're on the list. Watch your inbox for the next obituary.
+        </p>
+      </div>
+    </section>
+  )}
+
   <!-- Today's Featured -->
   {featured && (
     <section class="mx-auto max-w-6xl px-4 py-10">
       <div class="grave-divider mb-6">
-        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🕯 TODAY'S OFFERING</span>
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🕯 FRESHLY BURIED</span>
       </div>
       <a href={`/grave/${featured.slug}`} class="block pixel-card p-6 md:p-8 hover:border-grave-ghost/40 transition-colors">
         <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -90,6 +104,30 @@ const featured = graves[0];
 
   <!-- Stats -->
   <GraveStats />
+
+  <!-- Newsletter -->
+  <section class="mx-auto max-w-6xl px-4 py-10">
+    <div class="pixel-card p-6 md:p-10 max-w-2xl mx-auto text-center">
+      <h2 class="font-pixel text-sm text-grave-bone mb-3">📜 THE OBITUARY</h2>
+      <p class="text-sm text-grave-ash leading-relaxed mb-6">
+        One dead product, delivered to your inbox every week.
+        No spam. Just autopsies.
+      </p>
+      <form action="https://formspree.io/f/mdayjbgq" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input type="hidden" name="_subject" value="Newsletter Subscription" />
+        <input type="hidden" name="_next" value="https://www.productgrave.net/?subscribed=1" />
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="you@example.com"
+          class="flex-1 bg-grave-night border-2 border-grave-stone px-4 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors"
+        />
+        <button type="submit" class="pixel-btn whitespace-nowrap">Subscribe</button>
+      </form>
+      <p class="text-[10px] text-grave-etch mt-3">Powered by Formspree. Unsubscribe anytime.</p>
+    </div>
+  </section>
 
   <!-- CTA -->
   <section class="mx-auto max-w-6xl px-4 py-16 text-center">
