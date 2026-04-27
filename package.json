@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "python3 scripts/generate-og.py && astro build && node scripts/generate-sitemap.mjs",
+    "build": "astro build && node scripts/generate-sitemap.mjs",
+    "generate-og": "python3 scripts/generate-og.py",
     "preview": "astro preview",
     "astro": "astro"
   },
