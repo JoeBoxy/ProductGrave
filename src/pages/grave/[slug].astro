@@ -45,7 +45,7 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
   title={title}
   description={summary}
   ogImage={og_image || `/images/og/${grave.slug}.png`}
-  canonical={`https://productgrave.com/grave/${grave.slug}`}
+  canonical={`https://www.productgrave.net/grave/${grave.slug}`}
 >
   <article class="mx-auto max-w-4xl px-4 py-10 md:py-16">
     <!-- Breadcrumb -->
@@ -198,7 +198,7 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
       <p class="font-pixel text-xs text-grave-ash mb-3">Share this death report</p>
       <div class="flex justify-center gap-3">
         <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${name} — ${epitaph}`)}&url=${encodeURIComponent(`https://productgrave.com/grave/${grave.slug}`)}`}
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${name} — ${epitaph}`)}&url=${encodeURIComponent(`https://www.productgrave.net/grave/${grave.slug}`)}`}
           target="_blank"
           rel="noopener"
           class="pixel-btn text-[10px]"
@@ -207,7 +207,7 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
         </a>
         <button
           class="pixel-btn text-[10px]"
-          onclick={`navigator.clipboard.writeText('https://productgrave.com/grave/${grave.slug}')`}
+          onclick={`navigator.clipboard.writeText('https://www.productgrave.net/grave/${grave.slug}')`}
         >
           Copy Link
         </button>
