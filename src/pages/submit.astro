@@ -7,6 +7,7 @@ const success = Astro.url.searchParams.get('success') === '1';
 <BaseLayout
   title={success ? "Thank You — Product Grave" : "Submit a Death — Product Grave"}
   description="Help us grow the graveyard. Submit a product death report and contribute to the collective memory of the tech industry."
+  canonical="https://www.productgrave.net/submit/"
 >
   <div class="mx-auto max-w-2xl px-4 py-16 md:py-24">
     <div class="text-center mb-10">
@@ -27,14 +28,14 @@ const success = Astro.url.searchParams.get('success') === '1';
         <p class="text-grave-ash mb-6">Another soul has been reported to the graveyard.</p>
         <div class="flex flex-wrap justify-center gap-3">
           <a href="/" class="pixel-btn">Back to Graveyard</a>
-          <a href="/submit" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit Another</a>
+          <a href="/submit/" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit Another</a>
         </div>
       </div>
     ) : (
     <div class="pixel-card p-6 md:p-8">
       <form class="space-y-6" action="https://formspree.io/f/mdayjbgq" method="POST">
         <input type="hidden" name="_subject" value="New Product Grave Submission" />
-        <input type="hidden" name="_next" value="https://www.productgrave.net/submit?success=1" />
+        <input type="hidden" name="_next" value="https://www.productgrave.net/submit/?success=1" />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Product Name *</label>

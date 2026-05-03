@@ -62,6 +62,14 @@ sources:
     url: "https://www.bloomberg.com/news/articles/2023-11-06/wework-files-for-bankruptcy-in-court-in-new-jersey"
 
 og_image: "/images/og/wework.png"
+tags:
+  - real-estate
+  - co-working
+  - softbank
+  - adam-neumann
+  - ipo
+  - hype-crash
+  - burn-rate
 ---
 
 ## The Autopsy

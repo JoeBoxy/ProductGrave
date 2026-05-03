@@ -60,6 +60,12 @@ sources:
     url: "https://www.theguardian.com/technology/2012/jul/13/digg-sold-betaworks"
 
 og_image: "/images/og/digg.png"
+tags:
+  - social
+  - news
+  - reddit
+  - redesign-disaster
+  - execution
 ---
 
 ## The Autopsy

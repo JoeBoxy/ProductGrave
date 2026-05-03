@@ -60,6 +60,13 @@ sources:
     url: "https://www.theatlantic.com/technology/archive/2016/10/the-tragedy-of-vine/505795/"
 
 og_image: "/images/og/vine.png"
+tags:
+  - social
+  - video
+  - twitter
+  - short-form
+  - instagram
+  - acquired-killed
 ---
 
 ## The Autopsy

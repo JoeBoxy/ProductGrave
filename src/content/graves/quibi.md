@@ -56,6 +56,13 @@ sources:
     url: "https://www.theverge.com/2020/10/21/21530707/quibi-shutdown-end-date-refund-mobile-video"
 
 og_image: "/images/og/quibi.png"
+tags:
+  - streaming
+  - mobile-video
+  - hollywood
+  - burn-rate
+  - covid
+  - no-pmf
 ---
 
 ## The Autopsy

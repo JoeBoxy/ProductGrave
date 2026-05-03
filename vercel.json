@@ -1,0 +1,12 @@
+{
+  "redirects": [
+    { "source": "/about", "destination": "/about/", "permanent": true },
+    { "source": "/browse", "destination": "/browse/", "permanent": true },
+    { "source": "/stats", "destination": "/stats/", "permanent": true },
+    { "source": "/submit", "destination": "/submit/", "permanent": true },
+    { "source": "/validate-idea", "destination": "/validate-idea/", "permanent": true },
+    { "source": "/collections/:path", "destination": "/collections/:path/", "permanent": true },
+    { "source": "/grave/:path", "destination": "/grave/:path/", "permanent": true },
+    { "source": "/tag/:path", "destination": "/tag/:path/", "permanent": true }
+  ]
+}

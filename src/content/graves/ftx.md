@@ -62,6 +62,13 @@ sources:
     url: "https://www.nytimes.com/2022/11/11/business/ftx-bankruptcy.html"
 
 og_image: "/images/og/ftx.png"
+tags:
+  - crypto
+  - exchange
+  - fraud
+  - sbf
+  - bankruptcy
+  - hype-crash
 ---
 
 ## The Autopsy

@@ -60,6 +60,13 @@ sources:
     url: "https://arstechnica.com/information-technology/2017/10/windows-phone-is-dead/"
 
 og_image: "/images/og/windows-phone.png"
+tags:
+  - mobile
+  - microsoft
+  - ios
+  - android
+  - app-gap
+  - competition
 ---
 
 ## The Autopsy

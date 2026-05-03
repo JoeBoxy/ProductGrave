@@ -58,6 +58,12 @@ sources:
     url: "https://www.theverge.com/2012/10/23/3544894/color-shuts-down-apple-acquisition"
 
 og_image: "/images/og/color.png"
+tags:
+  - social
+  - photo-sharing
+  - pre-launch-funding
+  - sequoia
+  - no-pmf
 ---
 
 ## The Autopsy

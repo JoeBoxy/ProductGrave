@@ -11,7 +11,31 @@ const graves = allGraves.sort((a, b) => {
 });
 
 const featured = graves[0];
+const recentGraves = graves.slice(0, 24);
 const subscribed = Astro.url.searchParams.get('subscribed') === '1';
+const caseCount = graves.length;
+const collections = [
+  {
+    href: '/collections/most-expensive-startup-failures/',
+    title: 'Most Expensive Failures',
+    desc: 'The biggest capital bonfires in the graveyard.',
+  },
+  {
+    href: '/collections/killed-by-google/',
+    title: 'Killed by Google',
+    desc: 'Products buried by Google, strategy shifts, and neglect.',
+  },
+  {
+    href: '/collections/fastest-startup-deaths/',
+    title: 'Fastest Deaths',
+    desc: 'The shortest-lived products with documented lifespans.',
+  },
+  {
+    href: '/collections/most-overhyped-startup-failures/',
+    title: 'Most Overhyped',
+    desc: 'When narrative, funding, and reality violently diverged.',
+  },
+];
 
 const description = `A pixel-art graveyard for ${graves.length} dead tech products. Explore the stories, causes of death, and lessons from failed startups and killed products.`;
 
@@ -23,7 +47,7 @@ const itemListSchema = {
     '@type': 'ListItem',
     position: index + 1,
     name: grave.data.name,
-    url: `${siteUrl}/grave/${grave.slug}`,
+    url: `${siteUrl}/grave/${grave.slug}/`,
   })),
 };
 
@@ -43,7 +67,7 @@ const breadcrumbSchema = {
 >
   <!-- Hero -->
   <section class="relative overflow-hidden border-b-2 border-grave-stone">
-    <div class="mx-auto max-w-6xl px-4 py-16 md:py-24 text-center">
+    <div class="mx-auto max-w-6xl px-4 pt-16 pb-10 md:pt-24 md:pb-14 text-center">
       <h1 class="text-2xl md:text-4xl text-grave-bone text-shadow-pixel mb-6">
         🪦 PRODUCT GRAVE
         <span class="block text-sm md:text-base text-grave-ghost mt-3 font-sans">A Digital Graveyard for Dead Tech Products &amp; Failed Startups</span>
@@ -53,18 +77,18 @@ const breadcrumbSchema = {
         and extract lessons for the living.
       </p>
       <p class="text-sm text-grave-ghost mb-8">
-        20 cases · Verdicts open · Join the inquest
+        {caseCount} cases · Verdicts open · Join the inquest
       </p>
       <div class="flex flex-wrap justify-center gap-4">
         <a href="#graveyard" class="pixel-btn">Enter Graveyard</a>
-        <a href="/submit" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit a Death</a>
+        <a href="/submit/" class="pixel-btn border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">Submit a Death</a>
       </div>
     </div>
 
     <!-- Decorative stars / particles -->
     <div class="absolute top-8 left-8 text-grave-candle/20 text-lg animate-float">✦</div>
     <div class="absolute top-16 right-12 text-grave-ghost/15 text-sm animate-float" style="animation-delay: 1s;">✦</div>
-    <div class="absolute bottom-12 left-1/4 text-grave-blood/10 text-xs animate-float" style="animation-delay: 2s;">✦</div>
+    <div class="absolute bottom-6 left-1/4 text-grave-blood/10 text-xs animate-float" style="animation-delay: 2s;">✦</div>
   </section>
 
   {subscribed && (
@@ -77,13 +101,45 @@ const breadcrumbSchema = {
     </section>
   )}
 
+  <!-- Oracle CTA Banner -->
+  <section class="relative border-b-2 border-grave-stone/80 overflow-hidden">
+    <!-- Subtle background glow -->
+    <div class="absolute inset-0 bg-grave-earth/30" />
+    <div class="absolute inset-0 bg-gradient-to-r from-grave-ghost/5 via-transparent to-grave-ghost/5" />
+    <!-- Top & bottom accent lines -->
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-grave-ghost/25 to-transparent" />
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-grave-ghost/15 to-transparent" />
+    <!-- Decorative stars -->
+    <div class="absolute top-2 right-10 text-grave-ghost/15 text-[10px] animate-float" style="animation-delay: 0.5s;">✦</div>
+    <div class="absolute bottom-2 left-10 text-grave-candle/10 text-[8px] animate-float" style="animation-delay: 1.5s;">✦</div>
+
+    <div class="relative mx-auto max-w-6xl px-4 py-4 md:py-5">
+      <a href="/validate-idea/" class="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 group">
+        <div class="flex items-center gap-3 md:gap-4">
+          <span class="text-2xl md:text-3xl group-hover:scale-110 transition-transform duration-300">🔮</span>
+          <div>
+            <h2 class="font-pixel text-[10px] md:text-xs text-grave-bone mb-0.5 group-hover:text-grave-ghost transition-colors">
+              WILL YOUR IDEA DIE?
+            </h2>
+            <p class="text-[11px] md:text-xs text-grave-ash leading-relaxed">
+              Ask the Graveyard Oracle — AI pre-mortem analysis based on the Product Grave archive.
+            </p>
+          </div>
+        </div>
+        <span class="pixel-btn border-grave-ghost/50 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night text-[10px] shrink-0">
+          Get Death Report →
+        </span>
+      </a>
+    </div>
+  </section>
+
   <!-- Today's Featured -->
   {featured && (
     <section class="mx-auto max-w-6xl px-4 py-10">
       <div class="grave-divider mb-6">
         <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🕯 FRESHLY BURIED</span>
       </div>
-      <a href={`/grave/${featured.slug}`} class="block pixel-card p-6 md:p-8 hover:border-grave-ghost/40 transition-colors">
+      <a href={`/grave/${featured.slug}/`} class="block pixel-card p-6 md:p-8 hover:border-grave-ghost/40 transition-colors">
         <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
           <div class="text-4xl">🪦</div>
           <div class="flex-1">
@@ -103,29 +159,55 @@ const breadcrumbSchema = {
       <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🪦 THE GRAVEYARD</span>
     </div>
 
-    {graves.length === 0 ? (
+    {recentGraves.length === 0 ? (
       <div class="text-center py-20">
         <p class="font-pixel text-sm text-grave-etch mb-4">The graveyard is empty...</p>
         <p class="text-grave-ash">Be the first to bury a product.</p>
-        <a href="/submit" class="pixel-btn mt-6">Submit a Death</a>
+        <a href="/submit/" class="pixel-btn mt-6">Submit a Death</a>
       </div>
     ) : (
-      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
-        {graves.map((grave) => (
-          <li>
-            <TombstoneCard
-              slug={grave.slug}
-              name={grave.data.name}
-              birth={grave.data.birth}
-              death={grave.data.death}
-              epitaph={grave.data.epitaph}
-              causeOfDeath={grave.data.cause_of_death}
-              industry={grave.data.industry}
-            />
-          </li>
-        ))}
-      </ul>
+      <>
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+          {recentGraves.map((grave) => (
+            <li>
+              <TombstoneCard
+                slug={grave.slug}
+                name={grave.data.name}
+                birth={grave.data.birth}
+                death={grave.data.death}
+                epitaph={grave.data.epitaph}
+                causeOfDeath={grave.data.cause_of_death}
+                industry={grave.data.industry}
+              />
+            </li>
+          ))}
+        </ul>
+        {graves.length > 24 && (
+          <div class="text-center mt-12">
+            <a href="/browse/" class="pixel-btn">
+              View All Burials →
+            </a>
+          </div>
+        )}
+      </>
     )}
+  </section>
+
+  <!-- Collections -->
+  <section class="mx-auto max-w-6xl px-4 py-10">
+    <div class="grave-divider mb-8">
+      <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🏆 POPULAR COLLECTIONS</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {collections.map((collection) => (
+        <a href={collection.href} class="pixel-card p-5 hover:border-grave-ghost/40 transition-colors group">
+          <h2 class="font-pixel text-xs text-grave-bone group-hover:text-grave-ghost transition-colors mb-3">
+            {collection.title}
+          </h2>
+          <p class="text-xs text-grave-ash leading-relaxed">{collection.desc}</p>
+        </a>
+      ))}
+    </div>
   </section>
 
   <!-- Stats -->
@@ -162,7 +244,7 @@ const breadcrumbSchema = {
       <p class="text-grave-ash text-sm leading-relaxed mb-6">
         Help us grow the graveyard. Submit a product death report and contribute to the collective memory of the tech industry.
       </p>
-      <a href="/submit" class="pixel-btn">Submit a Death Report</a>
+      <a href="/submit/" class="pixel-btn">Submit a Death Report</a>
     </div>
   </section>
   <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />

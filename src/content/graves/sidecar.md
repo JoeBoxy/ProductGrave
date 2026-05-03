@@ -56,6 +56,13 @@ sources:
     url: "https://www.theverge.com/2015/12/29/10686798/sidecar-shuts-down-uber-lyft"
 
 og_image: "/images/og/sidecar.png"
+tags:
+  - transportation
+  - ridesharing
+  - uber
+  - lyft
+  - competition
+  - pioneer
 ---
 
 ## The Autopsy

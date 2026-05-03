@@ -58,6 +58,13 @@ sources:
     url: "https://www.forbes.com/sites/ellenhuet/2015/07/17/homejoy-shut-down/"
 
 og_image: "/images/og/homejoy.png"
+tags:
+  - service
+  - uber-for-x
+  - y-combinator
+  - no-pmf
+  - regulation
+  - gig-economy
 ---
 
 ## The Autopsy

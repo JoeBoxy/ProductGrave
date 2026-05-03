@@ -36,18 +36,58 @@ const {
   og_image,
 } = grave.data;
 
+const causeLabel = cause_of_death.map((cause) => cause.replace(/-/g, ' ')).join(', ');
+
 const relatedGraves = related
   ? (await getCollection('graves')).filter((g) => related.includes(g.slug) && g.data.status === 'published')
   : [];
 
 const title = `${name} (${birth}–${death}) — Product Grave`;
+const canonicalUrl = `https://www.productgrave.net/grave/${grave.slug}/`;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: name,
+  description: summary,
+  image: og_image ? `https://www.productgrave.net${og_image}` : `https://www.productgrave.net/images/og/${grave.slug}.png`,
+  datePublished: birth ? `${birth}-01` : undefined,
+  dateModified: death ? `${death}-01` : undefined,
+  author: {
+    '@type': 'Organization',
+    name: 'Product Grave',
+    url: 'https://www.productgrave.net',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Product Grave',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://www.productgrave.net/images/og/default.png',
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalUrl,
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.productgrave.net/' },
+    { '@type': 'ListItem', position: 2, name: name, item: canonicalUrl },
+  ],
+};
 ---
 
 <BaseLayout
   title={title}
   description={summary}
   ogImage={og_image || `/images/og/${grave.slug}.png`}
-  canonical={`https://www.productgrave.net/grave/${grave.slug}`}
+  canonical={canonicalUrl}
+  ogType="article"
 >
   <article class="mx-auto max-w-4xl px-4 py-10 md:py-16">
     <!-- Breadcrumb -->
@@ -112,6 +152,52 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
       </div>
     </section>
 
+    <!-- Shareable Death Certificate -->
+    <section
+      class="pixel-card p-6 md:p-8 mb-8"
+      data-death-certificate
+      data-name={name}
+      data-birth={birth}
+      data-death={death}
+      data-cause={causeLabel}
+      data-epitaph={epitaph}
+      data-url={canonicalUrl}
+    >
+      <div class="grave-divider mb-6">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">📜 SHAREABLE CERTIFICATE</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-center">
+        <div class="relative overflow-hidden border-2 border-grave-stone bg-grave-night p-5 md:p-6">
+          <div class="absolute inset-0 bg-gradient-to-br from-grave-ghost/10 via-transparent to-grave-blood/10 pointer-events-none" />
+          <div class="relative border border-grave-stone/70 p-5 md:p-6 text-center">
+            <p class="font-pixel text-[9px] text-grave-ghost mb-4 uppercase tracking-widest">Product Grave</p>
+            <p class="font-pixel text-xs md:text-sm text-grave-bone mb-5">Certificate of Product Death</p>
+            <div class="text-4xl mb-4">🪦</div>
+            <h2 class="font-pixel text-base md:text-xl text-grave-bone text-shadow-pixel mb-3">{name}</h2>
+            <p class="font-mono text-xs text-grave-ash mb-4">{birth} — {death}</p>
+            <p class="text-xs text-grave-candle uppercase tracking-widest mb-4">{causeLabel}</p>
+            <p class="text-sm text-grave-ash italic leading-relaxed max-w-xl mx-auto">"{epitaph}"</p>
+          </div>
+        </div>
+
+        <div class="lg:w-56">
+          <p class="text-sm text-grave-ash leading-relaxed mb-4">
+            Generate a PNG death certificate for social posts, launch retrospectives, or founder group chats.
+          </p>
+          <div class="flex flex-col gap-3">
+            <button type="button" class="pixel-btn text-[10px] w-full" data-certificate-download>
+              Download PNG
+            </button>
+            <button type="button" class="pixel-btn text-[10px] w-full border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night" data-certificate-share>
+              Share Certificate
+            </button>
+          </div>
+          <p class="text-[10px] text-grave-etch mt-3" data-certificate-status aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
     <!-- Timeline -->
     {timeline && timeline.length > 0 && (
       <section class="mb-8">
@@ -137,6 +223,25 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
       </div>
       <div class="prose prose-invert prose-grave max-w-none">
         <Content />
+      </div>
+    </section>
+
+    <!-- Oracle CTA -->
+    <section class="pixel-card p-6 md:p-8 mb-8 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-grave-ghost/10 via-transparent to-grave-candle/10 pointer-events-none" />
+      <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+        <div class="flex items-start gap-4">
+          <span class="text-3xl shrink-0">🔮</span>
+          <div>
+            <h2 class="font-pixel text-xs text-grave-bone mb-2">Will your idea avoid this fate?</h2>
+            <p class="text-sm text-grave-ash leading-relaxed">
+              Run a pre-mortem against Product Grave failure patterns and get a practical death-risk report before you build.
+            </p>
+          </div>
+        </div>
+        <a href={`/validate-idea/?from=${grave.slug}`} class="pixel-btn text-[10px] shrink-0">
+          Analyze My Idea →
+        </a>
       </div>
     </section>
 
@@ -168,7 +273,7 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           {relatedGraves.map((g) => (
-            <a href={`/grave/${g.slug}`} class="pixel-card p-4 hover:border-grave-ghost/40 transition-colors">
+            <a href={`/grave/${g.slug}/`} class="pixel-card p-4 hover:border-grave-ghost/40 transition-colors">
               <p class="font-pixel text-xs text-grave-bone mb-1">{g.data.name}</p>
               <p class="text-xs text-grave-ash line-clamp-2">{g.data.summary}</p>
             </a>
@@ -199,11 +304,11 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
     <VerdictVote slug={grave.slug} name={name} />
 
     <!-- Share -->
-    <section class="pixel-card p-6 text-center">
+    <section class="pixel-card p-6 text-center mb-8">
       <p class="font-pixel text-xs text-grave-ash mb-3">Share this death report</p>
-      <div class="flex justify-center gap-3">
+      <div class="flex flex-wrap justify-center gap-3">
         <a
-          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${name} — ${epitaph}`)}&url=${encodeURIComponent(`https://www.productgrave.net/grave/${grave.slug}`)}`}
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${name} — ${epitaph}`)}&url=${encodeURIComponent(`https://www.productgrave.net/grave/${grave.slug}/`)}`}
           target="_blank"
           rel="noopener"
           class="pixel-btn text-[10px]"
@@ -212,14 +317,200 @@ const title = `${name} (${birth}–${death}) — Product Grave`;
         </a>
         <button
           class="pixel-btn text-[10px]"
-          onclick={`navigator.clipboard.writeText('https://www.productgrave.net/grave/${grave.slug}')`}
+          onclick={`navigator.clipboard.writeText('https://www.productgrave.net/grave/${grave.slug}/')`}
         >
           Copy Link
         </button>
+        <a href={`/validate-idea/?from=${grave.slug}`} class="pixel-btn text-[10px] border-grave-ghost/60 text-grave-ghost hover:bg-grave-ghost hover:text-grave-night">
+          Analyze Your Idea
+        </a>
       </div>
     </section>
+
+    <!-- Tags -->
+    {grave.data.tags && grave.data.tags.length > 0 && (
+      <section class="mb-8">
+        <div class="grave-divider mb-6">
+          <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🏷️ TAGS</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {grave.data.tags.map((tag) => (
+            <a
+              href={`/tag/${tag}/`}
+              class="pixel-tag border-grave-stone text-grave-ash hover:text-grave-ghost hover:border-grave-ghost/40 transition-colors"
+            >
+              #{tag.replace(/-/g, ' ')}
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- Discussion -->
     <Giscus term={`${name} — Product Grave`} />
   </article>
+
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script is:inline>
+    (function() {
+      const root = document.querySelector('[data-death-certificate]');
+      if (!root) return;
+
+      const downloadButton = root.querySelector('[data-certificate-download]');
+      const shareButton = root.querySelector('[data-certificate-share]');
+      const status = root.querySelector('[data-certificate-status]');
+
+      const certificate = {
+        name: root.dataset.name || 'Unknown Product',
+        birth: root.dataset.birth || '????',
+        death: root.dataset.death || '????',
+        cause: root.dataset.cause || 'unknown',
+        epitaph: root.dataset.epitaph || 'No epitaph recorded.',
+        url: root.dataset.url || 'https://www.productgrave.net/',
+      };
+
+      function setStatus(message) {
+        if (status) status.textContent = message;
+      }
+
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let currentY = y;
+
+        words.forEach((word, index) => {
+          const testLine = line ? `${line} ${word}` : word;
+          if (ctx.measureText(testLine).width > maxWidth && line) {
+            ctx.fillText(line, x, currentY);
+            line = word;
+            currentY += lineHeight;
+          } else {
+            line = testLine;
+          }
+
+          if (index === words.length - 1 && line) {
+            ctx.fillText(line, x, currentY);
+          }
+        });
+
+        return currentY + lineHeight;
+      }
+
+      function drawPixelBorder(ctx, x, y, width, height, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 6;
+        ctx.strokeRect(x, y, width, height);
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + 20, y + 20, width - 40, height - 40);
+      }
+
+      function buildCanvas() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 630;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#1A1423';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const gradient = ctx.createRadialGradient(300, 150, 20, 600, 315, 700);
+        gradient.addColorStop(0, 'rgba(87, 204, 153, 0.18)');
+        gradient.addColorStop(0.55, 'rgba(224, 122, 95, 0.08)');
+        gradient.addColorStop(1, 'rgba(26, 20, 35, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawPixelBorder(ctx, 54, 54, 1092, 522, '#3E3633');
+
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#57CC99';
+        ctx.font = 'bold 22px monospace';
+        ctx.fillText('PRODUCT GRAVE', 600, 118);
+
+        ctx.fillStyle = '#F4F1DE';
+        ctx.font = 'bold 34px serif';
+        ctx.fillText('Certificate of Product Death', 600, 170);
+
+        ctx.fillStyle = '#3E3633';
+        ctx.fillRect(505, 205, 190, 18);
+        ctx.beginPath();
+        ctx.arc(600, 225, 88, Math.PI, 0);
+        ctx.lineTo(688, 395);
+        ctx.lineTo(512, 395);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#F4F1DE';
+        ctx.font = 'bold 46px serif';
+        wrapText(ctx, certificate.name, 600, 260, 620, 54);
+
+        ctx.fillStyle = '#B5B0A3';
+        ctx.font = '22px monospace';
+        ctx.fillText(`${certificate.birth} - ${certificate.death}`, 600, 346);
+
+        ctx.fillStyle = '#F2CC8F';
+        ctx.font = 'bold 20px monospace';
+        wrapText(ctx, certificate.cause.toUpperCase(), 600, 390, 760, 28);
+
+        ctx.fillStyle = '#B5B0A3';
+        ctx.font = 'italic 26px serif';
+        wrapText(ctx, `"${certificate.epitaph}"`, 600, 455, 860, 34);
+
+        ctx.fillStyle = '#6B6560';
+        ctx.font = '18px monospace';
+        ctx.fillText(certificate.url.replace('https://', ''), 600, 535);
+
+        return canvas;
+      }
+
+      function canvasToBlob(canvas) {
+        return new Promise((resolve) => canvas.toBlob(resolve, 'image/png', 0.95));
+      }
+
+      async function getCertificateBlob() {
+        const canvas = buildCanvas();
+        return await canvasToBlob(canvas);
+      }
+
+      downloadButton?.addEventListener('click', async () => {
+        const blob = await getCertificateBlob();
+        if (!blob) {
+          setStatus('Could not generate certificate.');
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${certificate.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-death-certificate.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+        setStatus('Certificate generated.');
+      });
+
+      shareButton?.addEventListener('click', async () => {
+        const blob = await getCertificateBlob();
+        if (!blob) {
+          setStatus('Could not generate certificate.');
+          return;
+        }
+
+        const file = new File([blob], `${certificate.name}-death-certificate.png`, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `${certificate.name} Death Certificate`,
+            text: `${certificate.name} is buried in Product Grave.`,
+            url: certificate.url,
+            files: [file],
+          });
+          setStatus('Share sheet opened.');
+          return;
+        }
+
+        await navigator.clipboard.writeText(certificate.url);
+        setStatus('Sharing files is not supported here. Link copied instead.');
+      });
+    })();
+  </script>
 </BaseLayout>

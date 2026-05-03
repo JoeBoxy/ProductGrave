@@ -56,6 +56,13 @@ sources:
     url: "https://techcrunch.com/2015/01/15/google-glass-explorer-program-shuts-down/"
 
 og_image: "/images/og/google-glass.png"
+tags:
+  - hardware
+  - ar
+  - google
+  - too-early
+  - privacy
+  - wearables
 ---
 
 ## The Autopsy

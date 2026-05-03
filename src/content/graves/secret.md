@@ -58,6 +58,12 @@ sources:
     url: "https://www.theguardian.com/technology/2014/aug/12/secret-app-cyberbullying-schools"
 
 og_image: "/images/og/secret.png"
+tags:
+  - social
+  - anonymous
+  - cyberbullying
+  - regulation
+  - execution
 ---
 
 ## The Autopsy

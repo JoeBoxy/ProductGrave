@@ -62,6 +62,13 @@ sources:
     url: "https://techcrunch.com/2012/02/08/path-uploads-your-entire-address-book-to-their-servers/"
 
 og_image: "/images/og/path.png"
+tags:
+  - social
+  - mobile
+  - facebook
+  - design
+  - privacy-scandal
+  - competition
 ---
 
 ## The Autopsy

@@ -50,6 +50,7 @@ const graveCollection = defineCollection({
       .optional(),
 
     og_image: z.string().optional(),
+    tags: z.array(z.string()).optional(),
   }),
 });
 

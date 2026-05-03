@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { parseFundingToBillions } from '../lib/graveUtils';
 
 const graves = await getCollection('graves', (g) => g.data.status === 'published');
 
@@ -8,7 +9,7 @@ const total = graves.length;
 const industries: Record<string, number> = {};
 const causes: Record<string, number> = {};
 const stages: Record<string, number> = {};
-let totalFunding = 0;
+let totalFundingBillions = 0;
 
 graves.forEach((g) => {
   industries[g.data.industry] = (industries[g.data.industry] || 0) + 1;
@@ -17,8 +18,7 @@ graves.forEach((g) => {
   });
   stages[g.data.stage_at_death] = (stages[g.data.stage_at_death] || 0) + 1;
   if (g.data.funding_total) {
-    const num = parseFloat(g.data.funding_total.replace(/[^0-9.]/g, ''));
-    if (!isNaN(num)) totalFunding += num;
+    totalFundingBillions += parseFundingToBillions(g.data.funding_total);
   }
 });
 
@@ -29,6 +29,7 @@ const topIndustries = Object.entries(industries).sort((a, b) => b[1] - a[1]);
 <BaseLayout
   title="Graveyard Stats — Product Grave"
   description="Data and statistics from the digital graveyard. See what kills tech products most often."
+  canonical="https://www.productgrave.net/stats/"
 >
   <div class="mx-auto max-w-4xl px-4 py-16 md:py-24">
     <div class="text-center mb-12">
@@ -45,7 +46,7 @@ const topIndustries = Object.entries(industries).sort((a, b) => b[1] - a[1]);
         <p class="text-xs text-grave-ash mt-2">Souls Buried</p>
       </div>
       <div class="pixel-card p-5 text-center">
-        <p class="font-pixel text-2xl text-grave-blood text-shadow-pixel">${totalFunding.toFixed(1)}B</p>
+        <p class="font-pixel text-2xl text-grave-blood text-shadow-pixel">${totalFundingBillions.toFixed(1)}B</p>
         <p class="text-xs text-grave-ash mt-2">Total Funding Lost</p>
       </div>
       <div class="pixel-card p-5 text-center">

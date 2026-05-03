@@ -60,6 +60,13 @@ sources:
     url: "https://techcrunch.com/2015/11/16/rdio-files-for-bankruptcy/"
 
 og_image: "/images/og/rdio.png"
+tags:
+  - music
+  - streaming
+  - spotify
+  - apple-music
+  - competition
+  - design
 ---
 
 ## The Autopsy

@@ -56,6 +56,12 @@ sources:
     url: "https://www.bloomberg.com/news/articles/2000-11-07/pets-com-is-put-to-sleep"
 
 og_image: "/images/og/pets-com.png"
+tags:
+  - e-commerce
+  - dot-com
+  - bubble
+  - super-bowl
+  - mascot
 ---
 
 ## The Autopsy

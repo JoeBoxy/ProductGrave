@@ -58,6 +58,13 @@ sources:
     url: "https://techcrunch.com/2016/12/07/pebble/"
 
 og_image: "/images/og/pebble.png"
+tags:
+  - hardware
+  - smartwatch
+  - kickstarter
+  - apple-watch
+  - competition
+  - burn-rate
 ---
 
 ## The Autopsy

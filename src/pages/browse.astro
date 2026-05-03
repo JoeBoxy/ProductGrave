@@ -7,6 +7,7 @@ const graves = await getCollection('graves', (g) => g.data.status === 'published
 
 const industries: Record<string, typeof graves> = {};
 const causes: Record<string, typeof graves> = {};
+const tagCounts: Record<string, number> = {};
 
 graves.forEach((g) => {
   const ind = g.data.industry;
@@ -17,23 +18,132 @@ graves.forEach((g) => {
     if (!causes[c]) causes[c] = [];
     causes[c].push(g);
   });
+
+  g.data.tags?.forEach((t) => {
+    tagCounts[t] = (tagCounts[t] || 0) + 1;
+  });
 });
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+const sortedIndustries = Object.keys(industries).sort();
+const sortedCauses = Object.keys(causes).sort();
 ---
 
 <BaseLayout
   title="Browse — Product Grave"
   description="Browse dead tech products by industry, cause of death, and more."
+  canonical="https://www.productgrave.net/browse/"
 >
   <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <div class="text-center mb-12">
       <h1 class="font-pixel text-xl md:text-2xl text-grave-bone text-shadow-pixel mb-4">🔍 BROWSE THE DEAD</h1>
-      <p class="text-grave-ash max-w-xl mx-auto">
-        Explore the graveyard by cause of death, industry, or simply wander through the tombstones.
+      <p class="text-grave-ash max-w-xl mx-auto mb-6">
+        Explore the graveyard by cause of death, industry, tag, or simply wander through the tombstones.
       </p>
+
+      <!-- Tag Cloud (only tags with 3+ burials) -->
+      <div class="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+        {sortedTags.filter(([_, count]) => count >= 3).map(([tag, count]) => (
+          <a
+            href={`/tag/${tag}/`}
+            class="pixel-tag border-grave-stone text-grave-ash hover:text-grave-ghost hover:border-grave-ghost/40 transition-colors text-[10px]"
+            title={`${count} burial${count === 1 ? '' : 's'}`}
+          >
+            #{tag.replace(/-/g, ' ')} <span class="text-grave-etch">({count})</span>
+          </a>
+        ))}
+      </div>
     </div>
 
-    <!-- By Cause -->
+    <!-- Search & Filters -->
+    <section class="pixel-card p-5 md:p-6 mb-12" data-grave-browser>
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_180px_180px_auto] gap-3">
+        <label class="block">
+          <span class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Search the graveyard</span>
+          <input
+            type="search"
+            data-grave-search
+            placeholder="Search by product, epitaph, tag, industry..."
+            class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone placeholder:text-grave-etch focus:border-grave-ghost outline-none transition-colors"
+          />
+        </label>
+        <label class="block">
+          <span class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Industry</span>
+          <select
+            data-grave-industry
+            class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors"
+          >
+            <option value="">All industries</option>
+            {sortedIndustries.map((ind) => (
+              <option value={ind}>{ind}</option>
+            ))}
+          </select>
+        </label>
+        <label class="block">
+          <span class="block font-pixel text-[10px] text-grave-ash mb-2 uppercase">Cause</span>
+          <select
+            data-grave-cause
+            class="w-full bg-grave-night border-2 border-grave-stone px-3 py-2 text-sm text-grave-bone focus:border-grave-ghost outline-none transition-colors"
+          >
+            <option value="">All causes</option>
+            {sortedCauses.map((cause) => (
+              <option value={cause}>{cause.replace(/-/g, ' ')}</option>
+            ))}
+          </select>
+        </label>
+        <div class="flex md:items-end">
+          <button type="button" data-grave-reset class="pixel-btn w-full md:w-auto text-[10px]">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <p class="text-xs text-grave-etch">
+          <span data-grave-count>{graves.length}</span> burial<span data-grave-plural>s</span> visible
+        </p>
+        <p class="text-[10px] text-grave-etch">
+          Tip: search "google", "privacy", "hardware", or "no pmf".
+        </p>
+      </div>
+    </section>
+
+    <!-- All Graves -->
     <section class="mb-16">
+      <div class="grave-divider mb-8">
+        <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🪦 ALL BURIALS</span>
+      </div>
+
+      <p data-grave-empty class="hidden pixel-card p-6 text-center text-sm text-grave-ash mb-8">
+        No graves match those filters. Try a broader search.
+      </p>
+
+      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+        {graves.map((g) => (
+          <li
+            data-grave-card
+            data-name={g.data.name.toLowerCase()}
+            data-industry={g.data.industry}
+            data-causes={g.data.cause_of_death.join(' ')}
+            data-tags={(g.data.tags || []).join(' ').toLowerCase()}
+            data-search={`${g.data.name} ${g.data.epitaph} ${g.data.summary} ${g.data.industry} ${g.data.cause_of_death.join(' ')} ${(g.data.tags || []).join(' ')}`.toLowerCase()}
+          >
+            <TombstoneCard
+              slug={g.slug}
+              name={g.data.name}
+              birth={g.data.birth}
+              death={g.data.death}
+              epitaph={g.data.epitaph}
+              causeOfDeath={g.data.cause_of_death}
+              industry={g.data.industry}
+            />
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- By Cause -->
+    <section class="mb-16" data-browse-groups>
       <div class="grave-divider mb-8">
         <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">⚰️ BY CAUSE OF DEATH</span>
       </div>
@@ -59,7 +169,7 @@ graves.forEach((g) => {
     </section>
 
     <!-- By Industry -->
-    <section>
+    <section data-browse-groups>
       <div class="grave-divider mb-8">
         <span class="font-pixel text-xs text-grave-ash whitespace-nowrap">🏭 BY INDUSTRY</span>
       </div>
@@ -84,4 +194,76 @@ graves.forEach((g) => {
       ))}
     </section>
   </div>
+
+  <script is:inline>
+    (function() {
+      const root = document.querySelector('[data-grave-browser]');
+      if (!root) return;
+
+      const searchInput = root.querySelector('[data-grave-search]');
+      const industrySelect = root.querySelector('[data-grave-industry]');
+      const causeSelect = root.querySelector('[data-grave-cause]');
+      const resetButton = root.querySelector('[data-grave-reset]');
+      const countEl = root.querySelector('[data-grave-count]');
+      const pluralEl = root.querySelector('[data-grave-plural]');
+      const emptyEl = document.querySelector('[data-grave-empty]');
+      const groupSections = document.querySelectorAll('[data-browse-groups]');
+      const cards = Array.from(document.querySelectorAll('[data-grave-card]'));
+
+      function syncFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        searchInput.value = params.get('q') || '';
+        industrySelect.value = params.get('industry') || '';
+        causeSelect.value = params.get('cause') || '';
+      }
+
+      function syncUrl() {
+        const params = new URLSearchParams();
+        const query = searchInput.value.trim();
+        if (query) params.set('q', query);
+        if (industrySelect.value) params.set('industry', industrySelect.value);
+        if (causeSelect.value) params.set('cause', causeSelect.value);
+        const next = params.toString() ? `/browse/?${params.toString()}` : '/browse/';
+        window.history.replaceState({}, '', next);
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim().toLowerCase();
+        const industry = industrySelect.value;
+        const cause = causeSelect.value;
+        let visible = 0;
+
+        cards.forEach((card) => {
+          const matchesQuery = !query || card.dataset.search.includes(query);
+          const matchesIndustry = !industry || card.dataset.industry === industry;
+          const matchesCause = !cause || card.dataset.causes.split(' ').includes(cause);
+          const isVisible = matchesQuery && matchesIndustry && matchesCause;
+
+          card.classList.toggle('hidden', !isVisible);
+          if (isVisible) visible += 1;
+        });
+
+        countEl.textContent = String(visible);
+        pluralEl.classList.toggle('hidden', visible === 1);
+        emptyEl.classList.toggle('hidden', visible !== 0);
+        groupSections.forEach((section) => {
+          section.classList.toggle('hidden', Boolean(query || industry || cause));
+        });
+        syncUrl();
+      }
+
+      syncFromUrl();
+      applyFilters();
+
+      searchInput.addEventListener('input', applyFilters);
+      industrySelect.addEventListener('change', applyFilters);
+      causeSelect.addEventListener('change', applyFilters);
+      resetButton.addEventListener('click', () => {
+        searchInput.value = '';
+        industrySelect.value = '';
+        causeSelect.value = '';
+        applyFilters();
+      });
+    })();
+  </script>
 </BaseLayout>

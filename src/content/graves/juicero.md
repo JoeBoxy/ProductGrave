@@ -56,6 +56,12 @@ sources:
     url: "https://www.theverge.com/2017/9/1/16236668/juicero-shutting-down-refunds"
 
 og_image: "/images/og/juicero.png"
+tags:
+  - hardware
+  - iot
+  - food
+  - no-pmf
+  - silicon-valley-mockery
 ---
 
 ## The Autopsy

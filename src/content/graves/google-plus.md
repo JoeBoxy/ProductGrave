@@ -60,6 +60,12 @@ sources:
     url: "https://www.wired.com/2013/05/google-plus-redesign/"
 
 og_image: "/images/og/google-plus.png"
+tags:
+  - social
+  - google
+  - facebook
+  - no-pmf
+  - competition
 ---
 
 ## The Autopsy

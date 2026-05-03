@@ -1,0 +1,360 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TombstoneCard from '../../components/tombstone/TombstoneCard.astro';
+
+const tagDescriptions: Record<string, { title: string; desc: string }> = {
+  'burn-rate': {
+    title: 'Burn Rate Victims',
+    desc: 'Startups that burned through cash faster than they could earn it. When runway runs out, even the hype dies.',
+  },
+  'no-pmf': {
+    title: 'No Product-Market Fit',
+    desc: 'Products that failed because nobody actually wanted them. The ultimate startup killer: building something no one needs.',
+  },
+  competition: {
+    title: 'Killed by Competition',
+    desc: 'Good products crushed by bigger, faster, or better rivals. Sometimes the graveyard is just business as usual.',
+  },
+  fraud: {
+    title: 'Fraud & Deception',
+    desc: 'Built on lies, hype, and eventually, handcuffs. These products didn\'t just fail — they deceived.',
+  },
+  execution: {
+    title: 'Poor Execution',
+    desc: 'Good idea, terrible delivery. These products had potential but were undone by mismanagement, arrogance, or incompetence.',
+  },
+  'hype-crash': {
+    title: 'Hype Crash',
+    desc: 'The bubble popped. Hard. These products rode the wave of irrational exuberance straight into the ground.',
+  },
+  'too-early': {
+    title: 'Too Early for the Market',
+    desc: 'Ahead of their time — and ahead of the market. Sometimes being first just means you\'re the first to die.',
+  },
+  regulation: {
+    title: 'Killed by Regulation',
+    desc: 'Laws, bans, and legal threats that shut down otherwise promising ventures.',
+  },
+  'acquired-killed': {
+    title: 'Acquired and Killed',
+    desc: 'Bought and buried by their new owners. The tech industry\'s favorite way to eliminate competition.',
+  },
+  privacy: {
+    title: 'Privacy Disasters',
+    desc: 'Products destroyed by privacy scandals, data breaches, and the loss of user trust.',
+  },
+  hardware: {
+    title: 'Hardware Failures',
+    desc: 'Physical products that couldn\'t survive the brutal economics of manufacturing and distribution.',
+  },
+  social: {
+    title: 'Dead Social Networks',
+    desc: 'Social platforms that couldn\'t keep their users engaged. Network effects work both ways — empty networks die fast.',
+  },
+  crypto: {
+    title: 'Crypto Graveyard',
+    desc: 'Blockchain, exchanges, and digital asset disasters. Not your keys, not your coins — and sometimes not your company either.',
+  },
+  streaming: {
+    title: 'Streaming Casualties',
+    desc: 'Video and audio platforms that couldn\'t compete with Netflix, Spotify, or YouTube.',
+  },
+  mobile: {
+    title: 'Mobile Failures',
+    desc: 'Mobile-first products that lost the platform war. iOS and Android are cruel monarchs.',
+  },
+  design: {
+    title: 'Beautiful but Dead',
+    desc: 'Stunningly designed products that couldn\'t find traction. Pretty doesn\'t pay the bills.',
+  },
+  kickstarter: {
+    title: 'Kickstarter Nightmares',
+    desc: 'Crowdfunded dreams that turned into delivery disasters or outright scams.',
+  },
+  'unsustainable-model': {
+    title: 'Unsustainable Business Models',
+    desc: 'Business models that never made economic sense. Subsidizing growth only works if someone else pays forever.',
+  },
+  'silicon-valley-mockery': {
+    title: 'Silicon Valley Mockeries',
+    desc: 'The laughingstocks of the tech industry. Products so absurd they became memes before they became history.',
+  },
+  'uber-for-x': {
+    title: '\"Uber for X\" Clones',
+    desc: 'The "Uber for everything" wave that crashed when investors realized most things aren\'t Uber.',
+  },
+  'y-combinator': {
+    title: 'YC Backed but Dead',
+    desc: 'Even Y Combinator\'s golden touch couldn\'t save these startups.',
+  },
+  'dot-com': {
+    title: 'Dot-Com Bubble Victims',
+    desc: 'Icons of the dot-com bubble burst. They had a sock puppet, a Super Bowl ad, and absolutely no business model.',
+  },
+  bankruptcy: {
+    title: 'Bankruptcies',
+    desc: 'Companies that ran out of money, options, and time. The final chapter of many startup stories.',
+  },
+  ipo: {
+    title: 'IPO Disasters',
+    desc: 'Public offerings that became public disasters. From Wall Street darling to penny stock in record time.',
+  },
+  health: {
+    title: 'Health & Biotech Failures',
+    desc: 'Healthcare ventures that promised to save lives but couldn\'t save themselves.',
+  },
+  'real-estate': {
+    title: 'Real Estate & Co-working',
+    desc: 'Property and workspace startups that collapsed under their own weight and hubris.',
+  },
+  'e-commerce': {
+    title: 'E-commerce Casualties',
+    desc: 'Online retail ventures that couldn\'t survive Amazon, unit economics, or their own ambition.',
+  },
+  transportation: {
+    title: 'Transportation Failures',
+    desc: 'Mobility startups that ran out of gas. Ridesharing, scooters, and everything in between.',
+  },
+  food: {
+    title: 'Food Tech Failures',
+    desc: 'Food and beverage tech that left a bad taste. Juicers, meal kits, and delivery disasters.',
+  },
+  music: {
+    title: 'Music Streaming Casualties',
+    desc: 'Music services that went silent. Spotify and Apple Music played the final requiem.',
+  },
+  video: {
+    title: 'Video Platform Failures',
+    desc: 'Video platforms that couldn\'t keep rolling. Short-form, long-form, and everything cut short.',
+  },
+  'short-form': {
+    title: 'Short-Video Casualties',
+    desc: 'Six seconds of fame, then oblivion. Short video apps that got cut short by TikTok and Instagram.',
+  },
+  wearables: {
+    title: 'Wearable Tech Failures',
+    desc: 'Devices you wore that didn\'t last. Smart glasses, watches, and gadgets that never found a wrist.',
+  },
+  ar: {
+    title: 'AR & VR Failures',
+    desc: 'Augmented reality products that couldn\'t see the future. The market wasn\'t ready — and neither were they.',
+  },
+  iot: {
+    title: 'IoT Disasters',
+    desc: 'Internet of Things devices that lost connection. Smart fridges, connected juicers, and dumb decisions.',
+  },
+  'pre-launch-funding': {
+    title: 'Pre-Launch Funding Disasters',
+    desc: 'Raised millions before launch, then vanished. The ultimate form of vaporware.',
+  },
+  pioneer: {
+    title: 'First Movers That Died',
+    desc: 'First movers that got run over. Innovation doesn\'t guarantee survival.',
+  },
+  'app-gap': {
+    title: 'The App Gap',
+    desc: 'Killed by the lack of developer support. No apps, no users, no future.',
+  },
+  college: {
+    title: 'Campus App Failures',
+    desc: 'Apps that exploded on college campuses and then got expelled by reality.',
+  },
+  anonymous: {
+    title: 'Anonymous Platform Disasters',
+    desc: 'Anonymous platforms that couldn\'t moderate themselves. When you give everyone a mask, things get ugly.',
+  },
+  cyberbullying: {
+    title: 'Destroyed by Toxicity',
+    desc: 'Products killed by cyberbullying, abuse, and the dark side of human nature.',
+  },
+  'gig-economy': {
+    title: 'Gig Economy Failures',
+    desc: 'Gig work platforms that couldn\'t sustain workers or profits.',
+  },
+  hollywood: {
+    title: 'Hollywood-Backed Flops',
+    desc: 'Entertainment ventures backed by big names that still flopped. Star power isn\'t product power.',
+  },
+  covid: {
+    title: 'Pandemic-Era Failures',
+    desc: 'Launched during COVID-19 and killed by reality. Bad timing is still bad timing.',
+  },
+  'apple-watch': {
+    title: 'Apple Watch Victims',
+    desc: 'Smartwatch competitors crushed by Apple\'s ecosystem and marketing machine.',
+  },
+  'apple-music': {
+    title: 'Apple Music Victims',
+    desc: 'Music services outplayed by Apple\'s ecosystem lock-in and vast library.',
+  },
+  spotify: {
+    title: 'Spotify Victims',
+    desc: 'Music apps that couldn\'t match Spotify\'s scale, freemium model, or playlist dominance.',
+  },
+  facebook: {
+    title: 'Facebook Competitors',
+    desc: 'Products that tried to beat Facebook at its own game. Spoiler: they lost.',
+  },
+  twitter: {
+    title: 'Twitter Acquisitions & Victims',
+    desc: 'Apps acquired or outcompeted by Twitter. Six seconds of Vine, then silence.',
+  },
+  instagram: {
+    title: 'Instagram Shadows',
+    desc: 'Photo and video apps overshadowed by Instagram. Filters and followers won.',
+  },
+  google: {
+    title: 'Google\'s Graveyard',
+    desc: 'Products killed by Google — or by Google\'s overwhelming competition.',
+  },
+  microsoft: {
+    title: 'Microsoft Battles',
+    desc: 'Mobile OS and services that couldn\'t beat Microsoft — or were killed by it.',
+  },
+  'elizabeth-holmes': {
+    title: 'The Theranos Saga',
+    desc: 'The Elizabeth Holmes story: a $9B fraud built on a machine that never worked.',
+  },
+  'adam-neumann': {
+    title: 'The Adam Neumann Era',
+    desc: 'Charismatic leadership, $47B valuations, and the WeWork collapse.',
+  },
+  sbf: {
+    title: 'The SBF & FTX Collapse',
+    desc: 'Sam Bankman-Fried and the house of cards that was FTX. Effective altruism, ineffectively executed.',
+  },
+  sequoia: {
+    title: 'Sequoia-Backed But Dead',
+    desc: 'Even Sequoia Capital\'s legendary judgment couldn\'t save these investments.',
+  },
+  softbank: {
+    title: 'SoftBank Vision Fund Casualties',
+    desc: 'Vision Fund investments that lost their vision. When money is no object, failure is expensive.',
+  },
+  'super-bowl': {
+    title: 'Super Bowl Ad Disasters',
+    desc: 'Big ad spend, no return. These brands bought 30 seconds of fame and years of failure.',
+  },
+  mascot: {
+    title: 'Mascot Brands',
+    desc: 'Brands built on memorable characters that couldn\'t sustain a real business.',
+  },
+  'redesign-disaster': {
+    title: 'Redesign Disasters',
+    desc: 'UI overhauls that drove users away. If it ain\'t broke, don\'t fix it — especially not like this.',
+  },
+  'privacy-scandal': {
+    title: 'Privacy Scandals',
+    desc: 'Data breaches and trust violations that killed products and destroyed reputations.',
+  },
+  news: {
+    title: 'News & Media Failures',
+    desc: 'News platforms and media aggregators that couldn\'t adapt to the social era.',
+  },
+  reddit: {
+    title: 'Reddit Rivals',
+    desc: 'Products that tried to dethrone Reddit. The front page of the internet stayed the front page.',
+  },
+  'photo-sharing': {
+    title: 'Photo Sharing Casualties',
+    desc: 'Apps that tried to capture the moment but missed the market.',
+  },
+};
+
+export async function getStaticPaths() {
+  const graves = await getCollection('graves', (g) => g.data.status === 'published');
+  const tagSet = new Set<string>();
+
+  graves.forEach((g) => {
+    g.data.tags?.forEach((t) => tagSet.add(t));
+  });
+
+  return Array.from(tagSet).map((tag) => ({
+    params: { tag },
+    props: { tag, graves },
+  }));
+}
+
+const { tag, graves } = Astro.props;
+
+const matchedGraves = graves.filter((g) => g.data.tags?.includes(tag));
+
+const meta = tagDescriptions[tag] || {
+  title: `${tag.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())} — Product Grave`,
+  desc: `Explore ${matchedGraves.length} dead tech product${matchedGraves.length === 1 ? '' : 's'} tagged with "${tag}" in the Product Grave digital graveyard.`,
+};
+
+const pageTitle = `${meta.title} — Product Grave`;
+const canonicalUrl = `https://www.productgrave.net/tag/${tag}/`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.productgrave.net/' },
+    { '@type': 'ListItem', position: 2, name: 'Browse', item: 'https://www.productgrave.net/browse/' },
+    { '@type': 'ListItem', position: 3, name: meta.title, item: canonicalUrl },
+  ],
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: matchedGraves.map((g, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: g.data.name,
+    url: `https://www.productgrave.net/grave/${g.slug}/`,
+  })),
+};
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={meta.desc}
+  canonical={canonicalUrl}
+>
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
+    <div class="text-center mb-12">
+      <nav class="mb-4">
+        <a href="/browse/" class="text-xs text-grave-ash hover:text-grave-ghost transition-colors">← Back to Browse</a>
+      </nav>
+      <h1 class="font-pixel text-xl md:text-2xl text-grave-bone text-shadow-pixel mb-4">
+        #{tag.replace(/-/g, ' ')}
+      </h1>
+      <p class="text-grave-ash max-w-2xl mx-auto leading-relaxed">
+        {meta.desc}
+      </p>
+      <p class="text-xs text-grave-etch mt-3">
+        {matchedGraves.length} burial{matchedGraves.length === 1 ? '' : 's'} found
+      </p>
+    </div>
+
+    {matchedGraves.length === 0 ? (
+      <div class="text-center py-20">
+        <p class="font-pixel text-sm text-grave-etch mb-4">The graveyard is empty for this tag...</p>
+        <a href="/browse/" class="pixel-btn mt-6">Browse All</a>
+      </div>
+    ) : (
+      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+        {matchedGraves.map((grave) => (
+          <li>
+            <TombstoneCard
+              slug={grave.slug}
+              name={grave.data.name}
+              birth={grave.data.birth}
+              death={grave.data.death}
+              epitaph={grave.data.epitaph}
+              causeOfDeath={grave.data.cause_of_death}
+              industry={grave.data.industry}
+            />
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+</BaseLayout>

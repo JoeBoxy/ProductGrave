@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IdeaValidator from '../components/validate/IdeaValidator.tsx';
+
+const description = 'Ask the Graveyard Oracle to analyze your startup idea against Product Grave failure patterns and generate a practical pre-mortem report.';
+---
+
+<BaseLayout
+  title="Graveyard Oracle — Will Your Idea Die? | Product Grave"
+  description={description}
+  ogImage="/images/og/oracle.png"
+  canonical="https://www.productgrave.net/validate-idea/"
+>
+  <div class="mx-auto max-w-6xl px-4 py-10 md:py-16">
+    <div class="text-center mb-6">
+      <nav class="mb-4">
+        <a href="/" class="text-xs text-grave-ash hover:text-grave-ghost transition-colors">← Back to Graveyard</a>
+      </nav>
+      <h1 class="font-pixel text-lg md:text-2xl text-grave-bone text-shadow-pixel mb-3">
+        🔮 GRAVEYARD ORACLE
+      </h1>
+      <p class="text-grave-ash text-sm max-w-xl mx-auto leading-relaxed">
+        Before you build, ask the dead. Our AI analyzes your startup idea against
+        documented failure patterns from the Product Grave archive and shows how it might die.
+      </p>
+    </div>
+
+    <IdeaValidator client:load />
+
+    <div class="mx-auto max-w-3xl px-4 mt-12">
+      <div class="border-t-2 border-grave-stone pt-8">
+        <h3 class="font-pixel text-xs text-grave-ash mb-4 text-center uppercase tracking-widest">
+          ⚠️ Disclaimer
+        </h3>
+        <p class="text-xs text-grave-etch leading-relaxed text-center max-w-2xl mx-auto">
+          The Graveyard Oracle does not predict the future. It identifies historical patterns of failure
+          based on publicly documented cases. Many great ideas faced similar risks and survived.
+          Use this as a thinking tool, not a verdict.
+        </p>
+        <p class="text-xs text-grave-etch leading-relaxed text-center max-w-2xl mx-auto mt-2">
+          No data is stored. Your idea is analyzed in real-time and discarded immediately.
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

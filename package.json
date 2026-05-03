@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && node scripts/generate-sitemap.mjs",
+    "build": "astro build",
     "generate-og": "python3 scripts/generate-og.py",
     "preview": "astro preview",
     "astro": "astro"
@@ -14,9 +14,12 @@
   "dependencies": {
     "@astrojs/react": "^3.6.0",
     "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.1.6",
     "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/vercel": "^7.0.0",
     "astro": "^4.16.0",
     "autoprefixer": "^10.4.20",
+    "marked": "^18.0.3",
     "postcss": "^8.4.47",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

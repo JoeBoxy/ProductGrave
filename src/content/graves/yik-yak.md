@@ -60,6 +60,13 @@ sources:
     url: "https://www.theatlantic.com/technology/archive/2017/04/the-rise-and-fall-of-yik-yak/524967/"
 
 og_image: "/images/og/yik-yak.png"
+tags:
+  - social
+  - anonymous
+  - college
+  - cyberbullying
+  - regulation
+  - execution
 ---
 
 ## The Autopsy

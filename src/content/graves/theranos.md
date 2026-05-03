@@ -60,6 +60,13 @@ sources:
     url: "https://www.sec.gov/news/press-release/2018-41"
 
 og_image: "/images/og/theranos.png"
+tags:
+  - health
+  - biotech
+  - fraud
+  - elizabeth-holmes
+  - execution
+  - silicon-valley
 ---
 
 ## The Autopsy

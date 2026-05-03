@@ -62,6 +62,11 @@ sources:
     url: "https://www.businessinsider.com/moviepass-burned-through-40-million-per-month-2018-4"
 
 og_image: "/images/og/moviepass.png"
+tags:
+  - entertainment
+  - subscription
+  - burn-rate
+  - unsustainable-model
 ---
 
 ## The Autopsy
