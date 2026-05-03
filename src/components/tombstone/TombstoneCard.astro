@@ -24,8 +24,9 @@ const decoColor = ['#E07A5F', '#57CC99', '#F2CC8F', '#9B5DE5', '#E63946', '#ADB5
   href={`/grave/${slug}`}
   class="group relative flex flex-col items-center text-center transition-all duration-300 hover:-translate-y-2"
 >
-  <!-- Tombstone shape with 3D feel -->
-  <div class="relative w-[170px] h-[240px] md:w-[190px] md:h-[260px]">
+  <article>
+    <!-- Tombstone shape with 3D feel -->
+    <div class="relative w-[170px] h-[240px] md:w-[190px] md:h-[260px]">
     
     <!-- Stone body - arched top tombstone -->
     <div
@@ -51,13 +52,13 @@ const decoColor = ['#E07A5F', '#57CC99', '#F2CC8F', '#9B5DE5', '#E63946', '#ADB5
 
       <!-- Dates in center -->
       <div class="absolute top-[84px] left-0 right-0">
-        <p class="font-mono text-[9px] text-grave-ash/60 tracking-wider">
+        <time datetime={birth} class="block font-mono text-[9px] text-grave-ash/60 tracking-wider">
           {birth}
-        </p>
+        </time>
         <p class="font-mono text-[8px] text-grave-blood/50 mt-1">↓</p>
-        <p class="font-mono text-[9px] text-grave-ash/60 tracking-wider mt-1">
+        <time datetime={death} class="block font-mono text-[9px] text-grave-ash/60 tracking-wider mt-1">
           {death}
-        </p>
+        </time>
       </div>
 
       <!-- RIP at bottom -->
@@ -89,4 +90,5 @@ const decoColor = ['#E07A5F', '#57CC99', '#F2CC8F', '#9B5DE5', '#E63946', '#ADB5
       ))}
     </div>
   </div>
+  </article>
 </a>

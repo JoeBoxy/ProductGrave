@@ -12,17 +12,41 @@ const graves = allGraves.sort((a, b) => {
 
 const featured = graves[0];
 const subscribed = Astro.url.searchParams.get('subscribed') === '1';
+
+const description = `A pixel-art graveyard for ${graves.length} dead tech products. Explore the stories, causes of death, and lessons from failed startups and killed products.`;
+
+const siteUrl = 'https://www.productgrave.net';
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: graves.map((grave, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: grave.data.name,
+    url: `${siteUrl}/grave/${grave.slug}`,
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.productgrave.net/' }
+  ],
+};
 ---
 
 <BaseLayout
-  title="Product Grave — Learn from the Dead"
-  description="A pixel-art graveyard for dead tech products. Explore the stories, causes of death, and lessons from failed startups and killed products."
+  title="Product Grave — Dead Tech Products & Failed Startups | Learn from the Dead"
+  description={description}
+  canonical="https://www.productgrave.net/"
 >
   <!-- Hero -->
   <section class="relative overflow-hidden border-b-2 border-grave-stone">
     <div class="mx-auto max-w-6xl px-4 py-16 md:py-24 text-center">
       <h1 class="text-2xl md:text-4xl text-grave-bone text-shadow-pixel mb-6">
         🪦 PRODUCT GRAVE
+        <span class="block text-sm md:text-base text-grave-ghost mt-3 font-sans">A Digital Graveyard for Dead Tech Products &amp; Failed Startups</span>
       </h1>
       <p class="text-base md:text-lg text-grave-ash max-w-2xl mx-auto leading-relaxed mb-2">
         Every dead product has a story. We bury them with honor, analyze their demise,
@@ -86,19 +110,21 @@ const subscribed = Astro.url.searchParams.get('subscribed') === '1';
         <a href="/submit" class="pixel-btn mt-6">Submit a Death</a>
       </div>
     ) : (
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
+      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10">
         {graves.map((grave) => (
-          <TombstoneCard
-            slug={grave.slug}
-            name={grave.data.name}
-            birth={grave.data.birth}
-            death={grave.data.death}
-            epitaph={grave.data.epitaph}
-            causeOfDeath={grave.data.cause_of_death}
-            industry={grave.data.industry}
-          />
+          <li>
+            <TombstoneCard
+              slug={grave.slug}
+              name={grave.data.name}
+              birth={grave.data.birth}
+              death={grave.data.death}
+              epitaph={grave.data.epitaph}
+              causeOfDeath={grave.data.cause_of_death}
+              industry={grave.data.industry}
+            />
+          </li>
         ))}
-      </div>
+      </ul>
     )}
   </section>
 
@@ -139,4 +165,6 @@ const subscribed = Astro.url.searchParams.get('subscribed') === '1';
       <a href="/submit" class="pixel-btn">Submit a Death Report</a>
     </div>
   </section>
+  <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 </BaseLayout>
